@@ -48,6 +48,27 @@ def build_chat_model(
             base_url=os.getenv("OLLAMA_BASE_URL", "http://localhost:11434"),
             temperature=temperature,
         )
+    
+    if provider == "anthropic":
+        from langchain_anthropic import ChatAnthropic
+
+        return ChatAnthropic(
+            model=model_name or os.getenv("ANTHROPIC_MODEL", "claude-3-5-sonnet-latest"),
+            temperature=temperature,
+            anthropic_api_key=os.getenv("ANTHROPIC_API_KEY"),
+        )
+    if provider == "openclaude":
+        from langchain_openai import ChatOpenAI
+
+        return ChatOpenAI(
+            model=model_name or os.getenv("GPT_MODEL", "gpt-5.5"),
+            base_url=os.getenv("OPENCLAUDE_BASE_URL", "https://open-claude.com/v1"),
+            api_key=os.getenv("OPENCLAUDE_API_KEY"),
+            temperature=temperature,
+            default_headers={
+                "User-Agent": "Mozilla/5.0 (compatible; openclaude-client/1.0)"
+            },
+        )
     raise ValueError("This lab supports only the `google` and `ollama` providers.")
 
 
